@@ -30,15 +30,13 @@ The table you start with</div>
 <th>Unit Price</th>
 </thead>
 
-<tbody>
-	<tr>
-	<td></td>
-	<td><textarea name="data[1][description]" class="m-wrap  description required" rows="2" ></textarea></td>
-	<td><input name="data[1][quantity]" class=""></td>
-	<td><input name="data[1][unit_price]"  class=""></td>
-	
-</tr>
-
+<tbody id="tablebody">
+	<tr id="row">
+		<th class="del">x</th>
+		<td class="editable"><textarea name="data[1][description]" class="m-wrap  description required editinput" rows="2" style="display:none"></textarea><span></span></td>
+		<td class="editable"><input name="data[1][quantity]" class="editinput" style="display:none" ><span></span></td>
+		<td class="editable"><input name="data[1][unit_price]"  class="editinput" style="display:none" ><span></span></td>
+	</tr>
 </tbody>
 
 </table>
@@ -64,14 +62,36 @@ Your browser does not support the video tag.
 <script>
 $(document).ready(function(){
 
+	var numrow = 1;
+	var new_row = "<tr>" + $('#row').html() + "</tr>";
+	
 	$("#add_item_button").click(function(){
-
-
-		alert("suppose to add a new row");
-		
-
+		numrow++;
+		var new_row_element = new_row.replace(/1/g, numrow);
+		$("#tablebody").append(new_row_element);
+		//console.log(new_row_element);
 		});
 
+	$("table").on('click', ".editable", function(){
+		//alert("clicked");
+		var text = $(this).children().eq(1);
+		text.css({'display': 'none'});
+		var input = $(this).children().eq(0);
+		input.css({'display': 'block'});
+		input.focus();
+	});
+
+	$("table").on('focusout', '.editinput', function(){
+		var input = $(this);
+		input.css({'display': 'none'});
+		var text = input.next();
+		text.css({'display': 'block'});
+		text.text(input.val());
+	});
+
+	$("table").on("click", ".del", function(){
+		var obj = $(this).parent().remove();
+	});
 	
 });
 </script>
