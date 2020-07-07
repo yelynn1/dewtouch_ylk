@@ -6,9 +6,31 @@
 			set_time_limit(0);
 			
 			$this->setFlash('Listing Record page too slow, try to optimize it.');
+
+			$this->paginate = array (
+				'limit' => 10
+			);
+			$cond = array();
+
+			if(isset($this->request->query['search'])){
+				$keyword = $this->request->query['search'];
+				$cond = array("Record.name LIKE '%$keyword%'");
+				$this->paginate = array (
+					'limit' => 10,
+					'conditions' => $cond
+				);
+			}
 			
+			if(isset($this->request->query['limit'])) {
+				$this->paginate = array (
+					'limit' => $this->request->query['limit'],
+					'conditions' => $cond
+				);
+			}
+
+			$records = $this->paginate('Record');
 			
-			$records = $this->Record->find('all');
+			//$records = $this->Record->find('all');
 			
 			$this->set('records',$records);
 			

@@ -12,11 +12,15 @@ class FileUploadController extends AppController {
 			if(in_array($file['type'], $mimes)){
 				$uploaded_content = array();
 				$handle = fopen($file['tmp_name'], 'r');
+				$num_row = 0;
 				while (($row = fgetcsv($handle, 0, ",")) !== FALSE) {
-					array_push($uploaded_content, array (
-						'name' => $row[0],
-						'email' => $row[1]
-					));
+					if ($num_row > 0) {
+						array_push($uploaded_content, array (
+							'name' => $row[0],
+							'email' => $row[1]
+						));
+					}
+					$num_row++;
 				}
 				fclose($handle);
 				$this->FileUpload->saveAll($uploaded_content, ['name', 'email']);
